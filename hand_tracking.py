@@ -116,6 +116,11 @@ def hand_tracking(shared, speech_event):
                         correctStreak = 0
                         correct_letter = False
 
+                        wrong_image_path = f"Lis_images\\{letter}.jpeg"
+                        wrong_overlay = cv2.imread(wrong_image_path)
+                        wrong_overlay = cv2.resize(wrong_overlay, (80, 80))
+                        frame = overlay_image_alpha(frame, wrong_overlay, 100, 30, alpha=0.6)
+
                         print(f"Lettera sbagliata: {letter}, lettera attesa: {text[current_letter_idx].upper()}, streak: {correctStreak}")
                 else:
                     frame = draw_border(frame, (255, 255, 255))
@@ -172,11 +177,13 @@ def hand_tracking(shared, speech_event):
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             shared["running"] = False
+            speech_event.set()  # Segnala al thread del parlato di terminare
             break
 
         # 🧠 EXIT se chiudi la finestra con X
         if cv2.getWindowProperty("Hand Tracking", cv2.WND_PROP_VISIBLE) < 1:
             shared["running"] = False
+            speech_event.set()  # Segnala al thread del parlato di terminare
             break
 
     cap.release()

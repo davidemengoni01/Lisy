@@ -14,7 +14,12 @@ def speech_analyzer(shared, speech_event):
 
         while shared["running"]:
             speech_event.wait()
+
+            if shared["running"] == False:
+                break
+
             print("In ascolto...")
+            
             try:
                 # ascolta audio
                 audio = r.listen(source)
